@@ -7,6 +7,7 @@
 #include <cctype>
 #include <string>
 #include <fstream>
+#include <unordered_map>
 
 
 class Calibration { 
@@ -46,7 +47,47 @@ class Calibration {
             std::cout << "The sum is: " << sum << std::endl;
             return sum;
         }
-        
+
+        std::vector<std::string> fixForPart2(std::vector<std::string> calibrations) {
+            std::vector<std::string> fixedCalibrations {};
+
+            for(std::string calibration: calibrations) { 
+                std::string replacement = replaceNumericalStrings(calibration);
+                std::cout << "Replaced: " << calibration << " with: " << replacement << std::endl;
+                fixedCalibrations.push_back(replacement);
+            }
+
+            return fixedCalibrations;
+        }
+
+        std::string replaceNumericalStrings(std::string input) {
+            std::unordered_map<std::string, std::string> replacements {};
+            replacements["one"] = "1";
+            replacements["two"] = "2";
+            replacements["three"] = "3";
+            replacements["four"] = "4";
+            replacements["five"] = "5";
+            replacements["six"] = "6";
+            replacements["seven"] = "7";
+            replacements["eight"] = "8";
+            replacements["nine"] = "9";
+
+            std::string replacement = input;
+            for(const auto& replacementPair: replacements) {
+                auto key = replacementPair.first;
+                auto value = replacementPair.second;
+
+                auto position = replacement.find(key);
+                if(position != std::string::npos) {
+                    replacement = replacement.replace(position, key.length(), value);
+                }
+                //position = replacement.find_last_of(key);
+                //if(position != std::string::npos) {
+                    //replacement = replacement.replace(position, key.length(), value);
+                //}
+            }
+            return replacement;
+        }
 };
 
 int main(int argc, char* argv[]) {
@@ -64,7 +105,10 @@ int main(int argc, char* argv[]) {
     }
     inputFile.close();
     Calibration calibration {};
-    calibration.FindCalibration(rawInput);
+
+    std::vector<std::string> inputCleanedForPart2 = calibration.fixForPart2(rawInput);
+
+    calibration.FindCalibration(inputCleanedForPart2);
 
     std::cout << "End of program" << std::endl;
     return 0;
