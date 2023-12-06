@@ -110,7 +110,7 @@ public:
                 min_blue = pull.blue;
             }
         }
-        //cout << "minRGB: " << min_red << ";" << min_green << ";" << ";" << min_blue << 
+        cout << "minRGB: " << min_red << ";" << min_green << ";" << ";" << min_blue << endl;
         unsigned int power = 1;
         if (min_red != 0) {
             power *= min_red;
@@ -145,21 +145,27 @@ int main(int argc, char* argv[]) {
     inputFile.close();
 
     vector<Game> possible_games {};
+    vector<Game> all_games {};
     for (std::string line : rawInput) {
         Game game = Game(line);
         if(game.Possible()) {
             possible_games.push_back(game);
         }
+        all_games.push_back(game);
     }
 
     unsigned int id_sum = 0;
-    unsigned int power_sum = 0;
     for(Game game: possible_games) {
         id_sum += game.gameNumber;
+    }
+    std::cout << "The id sum of possible games is: " << id_sum << std::endl;
+
+
+    unsigned int power_sum = 0;
+    for(Game game: all_games) {
         power_sum += game.MinPower();
     }
 
-    std::cout << "The id sum of possible games is: " << id_sum << std::endl;
     std::cout << "The power sum of possible games is: " << power_sum << std::endl;
 
     return 0;
