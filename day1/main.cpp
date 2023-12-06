@@ -9,6 +9,7 @@
 #include <fstream>
 #include <unordered_map>
 #include <optional>
+#include <string>
 
 
 class Calibration { 
@@ -50,13 +51,41 @@ class Calibration {
         }
 
         int part2(std::vector<std::string> input) {
-            return 0;
+            int sum = 0;
+            for(std::string line: input) {
+                std::string first = firstNumberInString(line);
+                std::string last = lastNumberInString(line);
+                std::cout << first << " + " << last << std::endl;
+                std::string combined = first + last;
+                sum += std::stoi(combined);
+            }
+            return sum;
         }
 
-        std::string firstNumberInString(std::string) {
-            int substringSize = 0;
-            //TOOD: iterate through string, taking larger and larger substring slices until numberInString returns nonempty optional
-            return "";
+        std::string firstNumberInString(std::string input) {
+            std::string substring;
+            for(int i = 0; i <= input.size(); i++) {
+                substring = input.substr(0, i);
+                std::optional<std::string> firstNumber = numberInString(substring);
+                if (firstNumber.has_value()) {
+                    return firstNumber.value();
+                }
+            }
+            std::cout << "Throwing in first number case" << std::endl;
+            throw std::exception();
+        }
+
+        std::string lastNumberInString(std::string input) {
+            std::string substring; 
+            for(int i = input.size() - 1; i >=0; i--) {
+                substring = input.substr(i);
+                std::optional<std::string> lastNumber = numberInString(substring);
+                if (lastNumber.has_value()) {
+                    return lastNumber.value();
+                }
+            }
+            std::cout << "Throwing in last number case" << std::endl;
+            throw std::exception();
         }
 
 
