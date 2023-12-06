@@ -1,0 +1,108 @@
+//Day 2: snow island challenge
+//
+// There are an unknown number of cubes in a bag, that are either red, green, or blue
+
+#include <string>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <regex>
+
+
+using std::vector;
+using std::cout;
+using std::endl;
+
+
+
+class DicePull { 
+public: 
+    int red;
+    int green;
+    int blue;
+    DicePull(int red, int green, int blue){ 
+        this->red = red;
+        this->green = green;
+        this->blue = blue;
+    }
+
+    bool Possible() {
+        return red <= 12 && green <= 13 && blue <= 14;
+    }
+};
+
+
+class Game {
+public: 
+    int gameNumber;
+    vector<DicePull> dice_pulls;
+
+    Game(std::string game_input) {
+        //first, set the game number correctly
+        size_t pos = game_input.find(':');
+        std::string game_number = game_input.substr(0, pos);
+        game_number = game_number.substr(5);
+        this->gameNumber = std::stoi(game_number);
+
+        //then, set the pulls
+        std::string pulls_substring = game_input.substr(pos);
+        pos = pulls_substring.find(';');
+        while(pulls_substring.find(';') != std::string::npos) {
+            std::string working_substring = pulls_substring.substr(0, pos);
+            pulls_substring = pulls_substring.substr(pos);
+
+            std::regex patternRed("\\b(\\d+)\\b red");
+            std::regex patternGreen("(\d) green");
+            std::regex patternBlue("(\d) blue");
+
+
+        }
+
+        dice_pulls = {};
+    }
+
+    bool Possible() {
+        bool possible = true;
+        for (DicePull pull : dice_pulls) {
+            possible = possible && pull.Possible();
+        }
+        return possible;
+    }
+};
+
+
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        cout << "No argument given, exiting" << endl;
+        return 0;
+    }
+    std::string input_file_name = {argv[1]};
+    std::ifstream inputFile(input_file_name);
+    std::vector<std::string> rawInput {};
+    std::string line {};
+    while(std::getline(inputFile, line)) {
+        if(line == "") {
+            continue;
+        }
+        rawInput.push_back(line);
+        std::cout << "Pushed back: " << line << std::endl;
+    }
+    inputFile.close();
+
+    vector<Game> possible_games {};
+    for (std::string line : rawInput) {
+        Game game = Game(line);
+        if(game.Possible()) {
+            possible_games.push_back(game);
+        }
+    }
+
+    unsigned int id_sum = 0;
+    for(Game game: possible_games) {
+        id_sum += game.gameNumber;
+    }
+
+    std::cout << "The id sum of possible games is: " << id_sum << std::endl;
+    return 0;
+}
